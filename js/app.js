@@ -2,6 +2,7 @@ var OlympicResults;
 var chartGroup;
 var width;
 var height;
+var margin;
 
 // convert results into seconds
 function magic(time) {
@@ -49,37 +50,38 @@ function dist(name) {
   return distance
 }
 
-// The buildPlot 1 function doesn't work yet
-// Plot for ALL years of a specified event
-// GOAL  var list = [{year, location, medal, name, nationality, result, speed}, {}, {}]
-function buildPlot1(event) {
+function getPlotData(event) {
   var plotData = [];
 
   var a = OlympicResults.find(e => e.name == event);
+  
+  console.log(OlympicResults);
+  console.log(event)
   a.games.forEach(g => {
-    var year = g.year;
-    var location = g.location;
     g.results.forEach(r => {
-      var medal = r.medal;
-      var name = r.name;
-      var nationality = r.nationality;
-      var result = r.result;
-      var speed = r.speed;
 
       plotData.push({
-        'year': year,
-        'location': location,
-        'medal': medal,
-        'name': name,
-        'nationality': nationality,
-        'result': result,
-        'speed': speed
+        'year': g.year,
+        'location': g.location,
+        'medal': r.medal,
+        'name': r.name,
+        'nationality': r.nationality,
+        'result': r.result,
+        'originalResult': r.originalResult,
+        'speed': r.speed
       })
     })
   });
+  return plotData;
+}
+
+// The buildPlot 1 works but needs to clear out whenever event is changed
+// GOAL  var list = [{year, location, medal, name, nationality, result, speed}, {}, {}]
+function buildPlot1(event) {
+  var plotData = getPlotData(event);
   console.log(plotData)
 // Step 2: Create scale functions
-    // ==============================
+    // // ==============================
     var xLinearScale = d3.scaleLinear()
       .domain([d3.min(plotData, d => d.year)-5, d3.max(plotData, d => d.year)+5])
       .range([0, width]);
@@ -93,61 +95,59 @@ function buildPlot1(event) {
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
-    // Step 4: Append Axes to the chart
+    // Step 4: Update Axes in Chart
     // ==============================
-    chartGroup.append("g")
-      .attr("transform", `translate(0, ${height})`)
+    chartGroup.selectAll(".x_axis")
       .call(bottomAxis);
 
-    chartGroup.append("g")
+    chartGroup.selectAll(".y_axis")
       .call(leftAxis);
 
-    // Step 5: Create Circles and Text
-    // ==============================
-    var circlesGroup = chartGroup.selectAll("circle")
-    .data(plotData)
-    .enter()
-    .append("circle")
-    .attr("cx", d => xLinearScale(d.year))
-    .attr("cy", d => yLinearScale(d.speed))
-    .attr("r", "10")
-    .attr("opacity", ".5")
-    .attr("class", "stateCircle");
-
-    var textGroup = chartGroup.selectAll()
-    .data(plotData)
-    .enter()
-    .append("text")
-    .text(d => d.medal)
-    .attr("x", d => xLinearScale(d.year))
-    .attr("y", d => yLinearScale(d.speed)+5)
-    .attr("fill", "white")
-    .attr("opacity", "0.8")
-    .attr("class", "stateText")
-    ;
-
-    // Step 6: Initialize tool tip
+    // Step 6: Ini tialize tool tip
     // ==============================
     var toolTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.location} ${d.year}<br>${d.name}<br>result: ${d.result}<br>speed: ${d.speed} m/s`);
+        return (`${d.location} ${d.year}<br><strong>${d.name}</strong> (${d.nationality})<br>result: ${d.originalResult}<br>speed: ${d.speed} m/s`);
       });
 
     // Step 7: Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
 
-    // Step 8: Create event listeners to display and hide the tooltip
+    // Step 5: Create Circles and Text
     // ==============================
-    textGroup.on("mouseover", function(data) {
-      toolTip.show(data, this);
-    })
-      // onmouseout event
-      .on("mouseout", function(data, index) {
-        toolTip.hide(data);
-      });
+    var circlesGroup = chartGroup.selectAll("circle")
+      .data(plotData);
+    circlesGroup
+      .enter()
+        .append("circle")
+        .attr("r", "6")
+        .attr("class", "resultCircle")
+        .on("click", function(data) {
+          toolTip.show(data, this);})
+        .on("mouseover", function(data) {
+          toolTip.hide(data);
+          })
+      .merge(circlesGroup)
+        .attr("cx", d => xLinearScale(d.year))
+        .attr("cy", d => yLinearScale(d.speed))   
+        .attr("opacity", d => {
+          if (d.medal == "G") {return "1"};
+          if (d.medal == "S") {return "0.5"};
+          if (d.medal == "B") {return "0.4"};
+          return ".3"
+        })
+        .attr("fill", d => {
+          if (d.medal == "G") {return "gold"}
+          else if (d.medal == "S") {return "silver"}
+          else if (d.medal == "B") {return "brown"}
+          return "black"
+        });   
+    circlesGroup
+      .exit()
+        .remove();
 
     // Create axes labels
     chartGroup.append("text")
@@ -161,18 +161,15 @@ function buildPlot1(event) {
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "aText")
-      .text("Smokers");
-
-
-
-
-
-
+      .text("Year");
 
   // });
-};
+}
 
-// Year range: 1896 - 2016
+function buildPlot2(event, year) {
+  var plotData = getPlotData(event).filter(d => d.year ==year);
+  console.log(plotData)
+}
 
 
 // init put the svg in the right html id, 
@@ -183,7 +180,7 @@ function init() {
 
   var svgWidth = 785;
   var svgHeight = 500;
-  var margin = {
+  margin = {
     top: 20,
     right: 10,
     bottom: 20,
@@ -204,6 +201,31 @@ function init() {
     .attr("transform", `translate(${margin.left}, ${margin.top})`)
     ;
 
+  var xLinearScale = d3.scaleLinear()
+    .domain([0,1])
+    .range([0, width]);
+
+  var yLinearScale = d3.scaleLinear()
+    .domain([0,1])
+    .range([height, 0]);
+
+  // Step 3: Create axis functions
+  // ==============================
+  var bottomAxis = d3.axisBottom(xLinearScale);
+  var leftAxis = d3.axisLeft(yLinearScale);
+
+  // Step 4: Append Axes to the chart
+  // ==============================
+  chartGroup.append("g")
+    .attr("transform", `translate(${margin.left}, ${height})`)
+    .attr("class", "x_axis")
+    .call(bottomAxis);
+
+  chartGroup.append("g")
+    .attr("transform", `translate(${margin.left}, 0)`) 
+    .attr("class", "y_axis")
+    .call(leftAxis);
+
   var exclusions = ["Hurdles", "Relay", "Shot", "Pole", "Jump", "Throw", "Steeplechase", "Decathlon", "Heptathlon"];
 
   d3.json("data/results.json").then((data) => {
@@ -219,6 +241,7 @@ function init() {
           game.results = game.results
             .filter(result => result.result)
             .map(result => {
+              result.originalResult = result.result;
               result.result = magic(result.result);
               result.speed = event.distance / result.result;
               return result
@@ -247,7 +270,7 @@ function init() {
 // calls yearChanged
 function eventChanged(newEvent) {
   var yearSelector = d3.select("#selYear");
-  yearSelector.html('<option value="all">ALL</option>');
+  yearSelector.html('<option value="all">all</option>');
   d3.json("data/results.json").then((data) => {
     data
       .find((o) => o.name == newEvent)
@@ -261,14 +284,14 @@ function eventChanged(newEvent) {
           .property("value", year);
       });
 
-    yearChanged(newEvent, 'all');
+    yearChanged('all');
   });
 }
 
-// This doesn't work yet
-// need to add concept of "ALL"
-// calls buildPlot
-function yearChanged(event, year) {
+// This isn't complete yet
+function yearChanged(year) {
+  var event = d3.select("#selEvent").node().value;
+  console.log(event);
   if (year == 'all') {
     buildPlot1(event)
   }

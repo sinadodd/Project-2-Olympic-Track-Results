@@ -25,14 +25,14 @@
 } */
 
 /* font size dependent on radius, see app.js */
-.stateText {
+.medalText {
   font-family: sans-serif;
-  fill: #fff;
+  fill: #fff);
   text-anchor: middle;
 }
 
-.stateCircle {
-  fill: #af4de7;
+.resultCircle {
+  /* fill: #190dc2; */
   stroke: #e3e3e3;
 }
 
@@ -51,6 +51,7 @@
   text-transform: capitalize;
   background: rgba(65, 13, 187, 0.8);
   border-radius: 4px;
+  pointer-events: none;
 }
 
 /* Mobile Rules */
