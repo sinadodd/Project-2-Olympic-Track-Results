@@ -24,15 +24,7 @@
   cursor: pointer;
 } */
 
-/* font size dependent on radius, see app.js */
-.medalText {
-  font-family: sans-serif;
-  fill: #fff);
-  text-anchor: middle;
-}
-
 .resultCircle {
-  /* fill: #190dc2; */
   stroke: #e3e3e3;
 }
 
@@ -42,15 +34,16 @@
 }
 
 .d3-tip {
-  padding: 6px;
+  padding: 3px;
   font-size: 12px;
   line-height: 1;
   line-height: 1.5em;
   color: #fff;
   text-align: center;
   text-transform: capitalize;
-  background: rgba(65, 13, 187, 0.8);
-  border-radius: 4px;
+  background: rgba(230, 124, 38, 0.774);
+  border: 0px;
+  border-radius: 8px;
   pointer-events: none;
 }
 

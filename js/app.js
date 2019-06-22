@@ -1,8 +1,10 @@
 var OlympicResults;
 var chartGroup;
+var runnersGroup;
 var width;
 var height;
 var margin;
+var runnersList = [];
 
 // convert results into seconds
 function magic(time) {
@@ -50,6 +52,22 @@ function dist(name) {
   return distance
 }
 
+function updateSelRunners() {
+  var runnersGroup = d3.select("#selRunners")
+    .selectAll("ul")
+    .data(runnersList);
+  runnersGroup
+    .enter()
+    .append("ul")
+    .merge(runnersGroup)
+    .html(function (d) {
+      return `${d.name}`;
+    });
+  runnersGroup.exit().remove();
+}
+
+// get flattened array for data to plot
+// [{year, location, medal, name, nationality, result, speed}, {}, {}]
 function getPlotData(event) {
   var plotData = [];
 
@@ -61,6 +79,7 @@ function getPlotData(event) {
     g.results.forEach(r => {
 
       plotData.push({
+        'distance': a.distance,
         'year': g.year,
         'location': g.location,
         'medal': r.medal,
@@ -76,11 +95,10 @@ function getPlotData(event) {
 }
 
 // The buildPlot 1 works but needs to clear out whenever event is changed
-// GOAL  var list = [{year, location, medal, name, nationality, result, speed}, {}, {}]
 function buildPlot1(event) {
   var plotData = getPlotData(event);
   console.log(plotData)
-// Step 2: Create scale functions
+    // Create scale functions
     // // ==============================
     var xLinearScale = d3.scaleLinear()
       .domain([d3.min(plotData, d => d.year)-5, d3.max(plotData, d => d.year)+5])
@@ -90,12 +108,12 @@ function buildPlot1(event) {
       .domain([d3.min(plotData, d => d.speed)*0.9, d3.max(plotData, d => d.speed)*1.1])
       .range([height, 0]);
 
-    // Step 3: Create axis functions
+    // Create axis functions
     // ==============================
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
-    // Step 4: Update Axes in Chart
+    // Update Axes in Chart
     // ==============================
     chartGroup.selectAll(".x_axis")
       .call(bottomAxis);
@@ -103,20 +121,20 @@ function buildPlot1(event) {
     chartGroup.selectAll(".y_axis")
       .call(leftAxis);
 
-    // Step 6: Ini tialize tool tip
+    // Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.location} ${d.year}<br><strong>${d.name}</strong> (${d.nationality})<br>result: ${d.originalResult}<br>speed: ${d.speed} m/s`);
+        return (`${d.location} ${d.year}<br><strong>${d.name}</strong> (${d.nationality})<br>result: ${d.originalResult}<br>speed: ${d.speed} m/s<br><a id="select_runner_link" href="#">Select Runner</a>`);
       });
 
-    // Step 7: Create tooltip in the chart
+    // Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
 
-    // Step 5: Create Circles and Text
+    // Create Circles and Text
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
       .data(plotData);
@@ -125,9 +143,40 @@ function buildPlot1(event) {
         .append("circle")
         .attr("r", "6")
         .attr("class", "resultCircle")
+        // Tried this solution for flickering tooltip. Failed.
+        // .on("mouseover", function(d) {         
+        //   toolTip.html(d)  
+        //     .style("left", (d3.event.pageX) + "px")     
+        //     .style("top", (d3.event.pageY - 28) + "px");    
+        // })                  
+        // .on("mouseout", function(d) {       
+        //   toolTip.transition().duration(500).style("opacity", 0);   
+        // })
+        
+        // Tried this solution for flickering tooltip. Failed. 
+        // .on("mouseover", function(d) {		
+        //   d3.select(".d3-tip").transition()		
+        //       .duration(200)		
+        //       .style("opacity", .9)
+        //       .style("left", (d3.event.pageX) + "px")		
+        //       .style("top", (d3.event.pageY - 28) + "px");	
+        //   })					
+        // .on("mouseout", function(d) {		
+        //   d3.select(".d3-tip").transition()		
+        //       .duration(500)		
+        //       .style("opacity", 0);
+
         .on("click", function(data) {
-          toolTip.show(data, this);})
-        .on("mouseover", function(data) {
+          console.log(this);
+          toolTip.show(data, this);
+          d3.selectAll("#select_runner_link")
+          .on("click", function() {
+            runnersList.push(data);
+            updateSelRunners();
+            console.log(runnersList)
+          });
+        })
+        .on("mousemove", function(data) {
           toolTip.hide(data);
           })
       .merge(circlesGroup)
@@ -166,9 +215,103 @@ function buildPlot1(event) {
   // });
 }
 
+// Call this plot when a YEAR has been selected
 function buildPlot2(event, year) {
-  var plotData = getPlotData(event).filter(d => d.year ==year);
+  var plotData = getPlotData(event).filter(d => d.year == year);
+  // Add field for distance the non-winners got to when the winner finished
+  var minResult = d3.min(plotData, d => d.result);
+  plotData.forEach(d => {
+    d.runDistance = d.speed * minResult;
+    if (d.medal == "G") {d.place = 1}
+    else if (d.medal == "S") {d.place = 2}
+    else if (d.medal == "B") {d.place = 3}
+    else {d.place = 0};
+  });
   console.log(plotData)
+  // Create scale functions
+    // // ==============================
+    var xLinearScale = d3.scaleLinear()
+      .domain([d3.min(plotData, d => d.runDistance), d3.max(plotData, d => d.runDistance)])
+      .range([0, width]);
+
+    var yLinearScale = d3.scaleLinear()
+      .domain([0.5,3.5])
+      .range([height, 0]);
+
+    // Create axis functions
+    // ==============================
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+    // Update Axes in Chart
+    // ==============================
+    chartGroup.selectAll(".x_axis")
+      .call(bottomAxis);
+
+    chartGroup.selectAll(".y_axis")
+      .call(leftAxis);
+
+    // Initialize tool tip
+    // ==============================
+    var toolTip = d3.tip()
+      .attr("class", "d3-tip")
+      .offset([80, -60])
+      .html(function(d) {
+        return (`<strong>${d.name}</strong> (${d.nationality})<br>result: ${d.originalResult}<br>place: ${d.place} m/s`);
+      });
+
+    // Create tooltip in the chart
+    // ==============================
+    chartGroup.call(toolTip);
+
+    // Create Circles and Text
+    // ==============================
+    var circlesGroup = chartGroup.selectAll("circle")
+      .data(plotData);
+    circlesGroup
+      .enter()
+        .append("circle")
+        .attr("r", "6")
+        .attr("class", "resultCircle")
+        .on("click", function(data) {
+          console.log(this);
+          toolTip.show(data, this);})
+        .on("mousemove", function(data) {
+          toolTip.hide(data);
+          })
+      .merge(circlesGroup)
+        .attr("cx", d => xLinearScale(d.runDistance))
+        .attr("cy", d => yLinearScale(d.place))   
+        .attr("opacity", d => {
+          if (d.medal == "G") {return "1"};
+          if (d.medal == "S") {return "0.5"};
+          if (d.medal == "B") {return "0.4"};
+          return ".3"
+        })
+        .attr("fill", d => {
+          if (d.medal == "G") {return "gold"}
+          else if (d.medal == "S") {return "silver"}
+          else if (d.medal == "B") {return "brown"}
+          return "black"
+        });   
+    circlesGroup
+      .exit()
+        .remove();
+
+    // Create axes labels
+    chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .attr("class", "aText")
+      .text("Medal");
+
+    chartGroup.append("text")
+      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+      .attr("class", "aText")
+      .text("Distance");
+
 }
 
 
@@ -200,6 +343,7 @@ function init() {
   chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`)
     ;
+  runnersGroup = d3.select("#selRunners");
 
   var xLinearScale = d3.scaleLinear()
     .domain([0,1])
