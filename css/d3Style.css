@@ -4,26 +4,6 @@
   text-anchor: middle;
 }
 
-/* active and inactive styling for axis text only applies if attempting BONUS */
-/* .active {
-  font-weight: bold;
-  fill: #000;
-  transition: fill 0.3s ease-out;
-  text-anchor: middle;
-}
-
-.inactive {
-  font-weight: lighter;
-  fill: #c9c9c9;
-  transition: fill 0.3s ease-out;
-  text-anchor: middle;
-} 
- 
-.inactive:hover {
-  fill: #000;
-  cursor: pointer;
-} */
-
 .resultCircle {
   stroke: #e3e3e3;
 }
@@ -44,7 +24,30 @@
   background: rgba(230, 124, 38, 0.774);
   border: 0px;
   border-radius: 8px;
-  pointer-events: none;
+  pointer-events: none; 
+}
+
+.btn-group {
+  fill: rgba(230, 124, 38, 0.774);
+}
+
+.jumbotron {
+  stroke: orangered;
+}
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* Mobile Rules */

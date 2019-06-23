@@ -7,10 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Rosina's Project 2</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
   crossorigin="anonymous">
-  <link rel="stylesheet" href="css/d3Style.css">
+  <link rel="stylesheet" type="text/css" href="css/d3Style.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
@@ -36,10 +36,15 @@
         <div class="well">
           <h5>Selected Runners:</h5>
           <ul id="selRunners"></ul>
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="clearRunnersList()">Clear All</button>
+            <button type="button" class="btn btn-secondary" onclick="buildPlot3()">Simulate Run</button>
+          </div>
         </div>
       </div>
-      <div class="col-md-5">
-        <div id="plot"></div>
+      <div class="col-md-10">
+        <div class="svg-container">
+        <div id="plot"></div></div>
       </div>
     </div>
 
