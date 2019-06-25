@@ -184,6 +184,11 @@ function buildPlot1(event) {
       toolTip.hide(data);
     })
     .merge(circlesGroup)
+    .attr("x", d => xLinearScale(d.year))
+    .attr("y", height)
+    .transition()
+      .delay(200)
+      .duration(500)
     .text("\uf5a2")
     .attr("x", d => xLinearScale(d.year))
     .attr("y", d => yLinearScale(d.speed))
@@ -201,6 +206,9 @@ function buildPlot1(event) {
     });
   circlesGroup
     .exit()
+    // .transition()
+    // .duration(200)
+    // .attr("y", 0)
     .remove();
 
   chartGroup.selectAll("rect.lane")
@@ -284,9 +292,15 @@ function buildPlot2(event, year) {
       toolTip.hide(data);
     })
     .merge(circlesGroup)
+
+    .attr("x", 0)
+    .attr("y", d => yLinearScale(d.place))
+    .transition()
+      .delay(200)
+      .duration(1500)
+    
     .text("\uf70c")
     .attr("x", d => xLinearScale(d.runDistance))
-    .attr("y", d => yLinearScale(d.place))
     .attr("opacity", d => {
       if (d.medal == "G") { return "1" };
       if (d.medal == "S") { return "0.7" };
@@ -302,6 +316,9 @@ function buildPlot2(event, year) {
 
   circlesGroup
     .exit()
+    .transition()
+      .duration(200)
+      .attr("x", width)
     .remove();
 
   // Create axes labels
@@ -371,6 +388,13 @@ function buildPlot3(event, year) {
       toolTip.hide(data);
     })
     .merge(circlesGroup)
+
+    .attr("x", 0)
+    .attr("y", d => yLinearScale(d.place))
+    .transition()
+      .delay(200)
+      .duration(1500)
+
     .text(d => `\uf70c`)
     .attr("x", d => xLinearScale(d.speed))
     .attr("y", d => yLinearScale(d.place))
@@ -388,6 +412,9 @@ function buildPlot3(event, year) {
     });
   circlesGroup
     .exit()
+    .transition()
+      .duration(200)
+      .attr("x", width)
     .remove();
 
   var namesGroup = chartGroup.selectAll(".plot3names")
@@ -397,6 +424,14 @@ function buildPlot3(event, year) {
     .append("text")
     .attr("class", "plot3names")
     .merge(namesGroup)
+
+    .attr("x", 0)
+    .attr("y", d => yLinearScale(d.place))
+    .attr("transform", "translate(-30, 23)")
+    .transition()
+      .delay(1350)
+      .duration(100)
+
     .text(d => `${d.name}`)
     .attr("x", d => xLinearScale(d.speed))
     .attr("y", d => yLinearScale(d.place))
@@ -409,6 +444,9 @@ function buildPlot3(event, year) {
     });
   namesGroup
     .exit()
+    .transition()
+      .duration(200)
+      .attr("x", width)
     .remove();
 
 
@@ -469,11 +507,6 @@ function init() {
   var yLinearScale = d3.scaleLinear()
     .domain([0, 1])
     .range([height, 0]);
-
-  // var yBandScale = d3.scaleBand()
-  //   .domain([0,1])
-  //   .range([height, 0])
-  //   .padding(0.1);
 
   // Create axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
