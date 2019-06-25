@@ -5,36 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Rosina's Project 2</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-  crossorigin="anonymous">
+  <title>Running Through Time</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/all.css">
   <link rel="stylesheet" type="text/css" href="css/d3Style.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
-
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
         <h1>Running Through Time</h1>
-        <h2>Racing mankind's greatest runners</h2>
+        <!-- <h2>Racing mankind's greatest runners</h2> -->
       </div>
     </div>
-
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-3">
         <div class="well">
-          <h5>Select Event:</h5>
+          <h5>Event</h5>
           <select id="selEvent" onchange="eventChanged(this.value)"></select>
         </div>
+        <hr>
         <div class="well">
-            <h5>Select Year:</h5>
-            <select id="selYear" onchange="yearChanged(this.value)"></select>
-          </div>
+          <h5>Year</h5>
+          <select id="selYear" onchange="yearChanged(this.value)"></select>
+        </div>
+        <hr>
         <div class="well">
-          <h5>Selected Runners:</h5>
+          <h5>Selected Runners</h5>
           <ul id="selRunners"></ul>
           <div class="btn-group">
             <button type="button" class="btn btn-secondary" onclick="clearRunnersList()">Clear All</button>
@@ -42,25 +41,23 @@
           </div>
         </div>
       </div>
-      <div class="col-md-10">
+      <div class="col-md-9">
         <div class="svg-container">
-        <div id="plot"></div></div>
+          <div id="plot"></div>
+        </div>
       </div>
     </div>
-
   </div>
 
   <div id="footer">
     <p>Rosina Tao Dodd &copy; 2019</p>
-    <div>Icons made by <a href="https://www.freepik.com/?__hstc=57440181.46c5c442012f2af3f3db12e58569d769.1561084878645.1561084878645.1561084878645.1&__hssc=57440181.1.1561084878646&__hsfp=1674309362" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/"                 title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/"                 title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
   </div>
 
-  <!-- <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script> -->
+  <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 
-</body> 
-
+</body>
 </html>

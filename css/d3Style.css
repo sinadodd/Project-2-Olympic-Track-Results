@@ -4,6 +4,19 @@
   text-anchor: middle;
 }
 
+.lane {
+  fill: sienna;
+}
+
+.symbol {
+  font-size: 20px;
+  text-anchor: middle;
+ }
+
+#x_text {
+  dominant-baseline: hanging;
+}
+
 .resultCircle {
   stroke: #e3e3e3;
 }
@@ -20,7 +33,6 @@
   line-height: 1.5em;
   color: #fff;
   text-align: center;
-  text-transform: capitalize;
   background: rgba(230, 124, 38, 0.774);
   border: 0px;
   border-radius: 8px;
