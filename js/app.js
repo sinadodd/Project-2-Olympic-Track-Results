@@ -535,7 +535,7 @@ function init() {
     .offset([0, 0]);
   chartGroup.call(toolTip);
 
-  var exclusions = ["Hurdles", "Relay", "Shot", "Pole", "Jump", "Throw", "Steeplechase", "Decathlon", "Heptathlon"];
+  var exclusions = ["Relay", "Shot", "Pole", "Jump", "Throw", "Decathlon", "Heptathlon"];
 
   d3.json("data/results.json").then((data) => {
     OlympicResults = data
