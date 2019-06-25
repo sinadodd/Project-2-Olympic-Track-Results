@@ -49,7 +49,16 @@
 }
 
 .jumbotron {
-  stroke: orangered;
+  padding: 1em 1em;
+  h1 {
+      font-size: 6em;
+  }
+  p {
+      font-size: 1.2em;
+      .btn {
+          padding: 0.5em;
+      }
+  }
 }
 
 .svg-container {

@@ -23,7 +23,12 @@ h2 {
   font-size: 13px;
 }
 
+h1 {
+  color: white;
+}
+
 #footer {
+  color: white;
   position: absolute;
   bottom: 0;
   width: 100%; /* Set the fixed height of the footer here */

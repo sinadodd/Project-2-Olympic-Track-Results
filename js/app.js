@@ -101,7 +101,7 @@ function updateSelRunners() {
   runnersGroup.exit().remove();
 }
 
-// get flattened array for data to plot
+// get flattened array of data to plot
 // [{year, location, medal, name, nationality, result, speed}, {}, {}]
 function getPlotData(event) {
   var plotData = [];
@@ -129,8 +129,9 @@ function getPlotData(event) {
   });
   return plotData;
 }
+
 // =====================================================
-// BuildPlot1 whenever event is changed ================
+// ==== BuildPlot1 whenever event is changed ===========
 // =====================================================
 function buildPlot1(event) {
   var plotData = getPlotData(event);
@@ -187,8 +188,8 @@ function buildPlot1(event) {
     .attr("x", d => xLinearScale(d.year))
     .attr("y", height)
     .transition()
-      .delay(200)
-      .duration(500)
+    .delay(200)
+    .duration(500)
     .text("\uf5a2")
     .attr("x", d => xLinearScale(d.year))
     .attr("y", d => yLinearScale(d.speed))
@@ -228,8 +229,9 @@ function buildPlot1(event) {
     .attr("class", "aText")
     .text("Year");
 }
+
 // =====================================================
-// Call Plot2 when a YEAR has been selected ============
+// ==== Call Plot2 when a YEAR has been selected =======
 // =====================================================
 function buildPlot2(event, year) {
   var plotData = getPlotData(event).filter(d => d.year == year);
@@ -296,9 +298,9 @@ function buildPlot2(event, year) {
     .attr("x", 0)
     .attr("y", d => yLinearScale(d.place))
     .transition()
-      .delay(200)
-      .duration(1500)
-    
+    .delay(200)
+    .duration(1500)
+
     .text("\uf70c")
     .attr("x", d => xLinearScale(d.runDistance))
     .attr("opacity", d => {
@@ -317,8 +319,8 @@ function buildPlot2(event, year) {
   circlesGroup
     .exit()
     .transition()
-      .duration(200)
-      .attr("x", width)
+    .duration(200)
+    .attr("x", width)
     .remove();
 
   // Create axes labels
@@ -337,7 +339,7 @@ function buildPlot2(event, year) {
 }
 
 // =====================================================
-// Plot3 for simulation run ============================
+// ==== Plot3 for simulation run =======================
 // =====================================================
 function buildPlot3(event, year) {
   toolTip.hide();
@@ -349,7 +351,7 @@ function buildPlot3(event, year) {
 
   // Create scale functions
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(runnersList, d => d.speed) * 0.99, d3.max(runnersList, d => d.speed) * 1.02])
+    .domain([d3.min(runnersList, d => d.speed) * 0.95, d3.max(runnersList, d => d.speed) * 1.07])
     .range([0, width]);
 
   var yLinearScale = d3.scaleLinear()
@@ -392,8 +394,8 @@ function buildPlot3(event, year) {
     .attr("x", 0)
     .attr("y", d => yLinearScale(d.place))
     .transition()
-      .delay(200)
-      .duration(1500)
+    .delay(200)
+    .duration(1500)
 
     .text(d => `\uf70c`)
     .attr("x", d => xLinearScale(d.speed))
@@ -413,8 +415,8 @@ function buildPlot3(event, year) {
   circlesGroup
     .exit()
     .transition()
-      .duration(200)
-      .attr("x", width)
+    .duration(200)
+    .attr("x", width)
     .remove();
 
   var namesGroup = chartGroup.selectAll(".plot3names")
@@ -429,8 +431,8 @@ function buildPlot3(event, year) {
     .attr("y", d => yLinearScale(d.place))
     .attr("transform", "translate(-30, 23)")
     .transition()
-      .delay(1350)
-      .duration(100)
+    .delay(1350)
+    .duration(100)
 
     .text(d => `${d.name}`)
     .attr("x", d => xLinearScale(d.speed))
@@ -445,8 +447,8 @@ function buildPlot3(event, year) {
   namesGroup
     .exit()
     .transition()
-      .duration(200)
-      .attr("x", width)
+    .duration(200)
+    .attr("x", width)
     .remove();
 
 
@@ -465,7 +467,6 @@ function buildPlot3(event, year) {
     .text("Speed (m/s)");
 
 };
-
 
 // init put the svg in the right html id, 
 // cleans the data (removes field-type events and called magic function to change results/times to matching format)
