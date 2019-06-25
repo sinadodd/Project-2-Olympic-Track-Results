@@ -130,7 +130,7 @@ function getPlotData(event) {
   return plotData;
 }
 // =====================================================
-// BuildPlot 1 whenever event is changed ===============
+// BuildPlot1 whenever event is changed ================
 // =====================================================
 function buildPlot1(event) {
   var plotData = getPlotData(event);
@@ -229,7 +229,7 @@ function buildPlot1(event) {
     .text("Year");
 }
 // =====================================================
-// Call this plot when a YEAR has been selected ========
+// Call Plot2 when a YEAR has been selected ============
 // =====================================================
 function buildPlot2(event, year) {
   var plotData = getPlotData(event).filter(d => d.year == year);
@@ -596,7 +596,6 @@ function eventChanged(newEvent) {
   });
 }
 
-// This isn't complete yet
 function yearChanged(year) {
   toolTip.hide();
   var event = d3.select("#selEvent").node().value;
