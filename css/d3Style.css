@@ -1,7 +1,7 @@
 .aText {
   font-family: sans-serif;
   font-size: 16px;
-  text-anchor: middle;
+  text-anchor: left;
 }
 
 .lane {
@@ -12,6 +12,11 @@
   font-size: 20px;
   text-anchor: middle;
  }
+
+.plot3names {
+  font-size: 15px;
+  color: black;
+} 
 
 #x_text {
   dominant-baseline: hanging;
